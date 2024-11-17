@@ -29,10 +29,47 @@ export const fetchData = (account) => {
         .getState()
         .blockchain.smartContract.methods.name()
         .call();
+      let allTokens = await store
+        .getState()
+        .blockchain.smartContract.methods.getAllTokens.call()
+        .call();
+
+      console.log("allTokens");
+      console.log(allTokens);
+      const ownedTokens = [];
+      // const objects = [];
+      let balance = await store
+        .getState()
+        .blockchain.smartContract.methods.balanceOf(account)
+        .call();
+
+      for (var i = 0; i < balance; i++) {
+        const owner = await store
+          .getState()
+          .blockchain.smartContract.methods.ownerOf(i)
+          .call();
+
+        if (account === owner.toLowerCase()) {
+          const targetToken = allTokens[i];
+          ownedTokens.push(targetToken);
+        }
+      }
+
+      // for (i = 0; i < ownedTokens.length; i++) {
+      //   objects.push(
+      //     await store
+      //       .getState()
+      //       .blockchain.smartContract.methods.tokenURI(tokenIdList[i])
+      //       .call()
+      //   );
+      // }
+
+      // alert(JSON.stringify(ownedTokens));
 
       dispatch(
         fetchDataSuccess({
           name,
+          allTokens,
         })
       );
     } catch (err) {

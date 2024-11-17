@@ -43,6 +43,7 @@ export const connect = () => {
         const networkId = await window.ethereum.request({
           method: "net_version",
         });
+        alert(`networkId : ${networkId}`);
         const NetworkData = await SmartContract.networks[networkId];
         if (NetworkData) {
           const SmartContractObj = new web3.eth.Contract(
@@ -56,6 +57,7 @@ export const connect = () => {
               web3: web3,
             })
           );
+
           // Add listeners start
           window.ethereum.on("accountsChanged", (accounts) => {
             dispatch(updateAccount(accounts[0]));
